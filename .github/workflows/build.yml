@@ -1,0 +1,30 @@
+name: Windows build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [x64, Win32]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build/${{ matrix.architecture }} -A ${{ matrix.architecture }}
+      - name: Build
+        run: cmake --build build/${{ matrix.architecture }} --config Release --parallel
+      - name: Unit tests
+        run: ctest --test-dir build/${{ matrix.architecture }} -C Release --output-on-failure
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ra-${{ matrix.architecture }}
+          path: build/${{ matrix.architecture }}/Release/ra.exe
+          if-no-files-found: error
