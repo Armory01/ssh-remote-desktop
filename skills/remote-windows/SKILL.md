@@ -1,6 +1,6 @@
 ---
 name: remote-windows
-description: Deploy and use the SSH Remote Windows desktop helper over an existing SSH connection to transfer files, launch programs, inspect UIA, take screenshots, operate a Windows desktop, and sign in to a Windows 11 local account. Use for remote Windows GUI tasks, not ordinary Linux SSH administration.
+description: Deploy and use the SSH Remote Desktop Windows helper over an existing SSH connection to transfer files, launch programs, inspect UIA, take screenshots, operate a Windows desktop, and sign in to a Windows 11 local account. Use for remote Windows GUI tasks, not ordinary Linux SSH administration.
 ---
 
 Use existing SSH/SCP and the Agent's native image reader. No MCP or dedicated local controller client is required. The target needs working SSH. Ordinary GUI commands need an unlocked same-account graphical session; helper 0.3.0 adds password unlock, and 0.4.0 adds Windows 11 local-account console sign-in after logout or boot through an already elevated SSH login. A helper is deployed automatically; the user does not install a runtime or start a worker.
@@ -9,10 +9,10 @@ Use existing SSH/SCP and the Agent's native image reader. No MCP or dedicated lo
 
 ### Obtain the matching helper
 
-This Skill is distributed from https://github.com/xienan2010/remote-windows-ssh-skill. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/remote-windows-ssh-skill/releases/download/v0.4.0/remote-windows-ssh-skill-0.4.0.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteWindows/releases/0.4.0`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
+This Skill is distributed from https://github.com/xienan2010/ssh-remote-desktop. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/ssh-remote-desktop/releases/download/v0.4.1/ssh-remote-desktop-0.4.1.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteDesktop/releases/0.4.1`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
 
-- x64 0.4.0: `d1697b0149d8c758ed0bb9564e4405b873d848929fdcdae28f3ddb6b1c255b6a`
-- x86 0.4.0: `4fa4c95ebac67825074ff5b48c3eae04726ba87991478acd9d205041f7c7c2ee`
+- x64 0.4.1: `978a7e548d9f35a103e317c3d643781e6f13d51e3dc09f00735b0900f3931e6d`
+- x86 0.4.1: `7abdeef50508068c068eb76dafb9f8e86d802ad45d0ae9f19086cd54f8fc3311`
 
 Reuse a verified cached binary; do not redownload for every command. The controller scripts below remain the installed Skill's adjacent scripts. No compiler, local controller binary or MCP setup is needed on the controller. A mismatched hash is a deployment failure, not permission to execute the binary.
 

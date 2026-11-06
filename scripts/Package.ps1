@@ -2,7 +2,7 @@
 param()
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$version='0.4.0'
+$version='0.4.1'
 $dest=Join-Path $root "dist/$version"
 [IO.Directory]::CreateDirectory($dest)|Out-Null
 $hashes=[Collections.Generic.List[string]]::new()
@@ -20,19 +20,20 @@ foreach($arch in @(@{build='x64';name='windows-x64'},@{build='Win32';name='windo
 $hashes|Set-Content (Join-Path $dest 'SHA256SUMS.txt')
 [IO.Directory]::CreateDirectory((Join-Path $dest 'skills'))|Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'skills/remote-windows') -Destination (Join-Path $dest 'skills') -Recurse -Force
-foreach($name in @('README.md','LICENSE','CHANGELOG.md','CONTRIBUTING.md')) {
+foreach($name in @('README.md','README.zh-CN.md','LICENSE','CHANGELOG.md','CHANGELOG.zh-CN.md','CONTRIBUTING.md','CONTRIBUTING.zh-CN.md')) {
     Copy-Item -LiteralPath (Join-Path $root $name) -Destination $dest
 }
 [IO.Directory]::CreateDirectory((Join-Path $dest 'docs'))|Out-Null
-Copy-Item -LiteralPath (Join-Path $root 'docs/TEST_RESULTS.md') -Destination (Join-Path $dest 'docs')
-Copy-Item -LiteralPath (Join-Path $root 'docs/IMPLEMENTATION_PLAN.md') -Destination (Join-Path $dest 'docs')
-Copy-Item -LiteralPath (Join-Path $root 'docs/USAGE.md') -Destination (Join-Path $dest 'docs')
+Get-ChildItem -LiteralPath (Join-Path $root 'docs') -Filter '*.md' -File | ForEach-Object {
+    Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $dest 'docs')
+}
 Copy-Item -LiteralPath (Join-Path $root 'docs/evidence') -Destination (Join-Path $dest 'docs') -Recurse -Force
 [IO.Directory]::CreateDirectory((Join-Path $dest 'third_party'))|Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'third_party/README.md') -Destination (Join-Path $dest 'third_party')
+Copy-Item -LiteralPath (Join-Path $root 'third_party/README.zh-CN.md') -Destination (Join-Path $dest 'third_party')
 [IO.Directory]::CreateDirectory((Join-Path $dest 'licenses'))|Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'third_party/nlohmann/LICENSE.MIT') -Destination (Join-Path $dest 'licenses/nlohmann-json.txt')
-$archive=Join-Path $root "dist/remote-windows-ssh-skill-$version.zip"
+$archive=Join-Path $root "dist/ssh-remote-desktop-$version.zip"
 Compress-Archive -Path (Join-Path $dest '*') -DestinationPath $archive -Force
 $archiveHash=(Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
 "$archiveHash  $(Split-Path $archive -Leaf)" | Set-Content -LiteralPath "$archive.sha256"

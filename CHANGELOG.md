@@ -1,5 +1,18 @@
 # Changelog
 
+**English** | [简体中文](CHANGELOG.zh-CN.md)
+
+## 0.4.1
+
+- Rename the project and repository to SSH Remote Desktop (`ssh-remote-desktop`).
+- Make English the default documentation language, with Chinese versions of the
+  README, SSH setup, advanced usage, architecture and validation documents.
+- Lead installation with a prompt users can paste into Codex, Claude Code or
+  another compatible agent; move low-level commands out of the README.
+- Add Microsoft's OpenSSH setup instructions and official offline download links.
+- Keep protocol 1, the `remote-windows` Skill name, `ra.exe` and existing remote
+  paths compatible. Desktop behavior is unchanged from 0.4.0.
+
 ## 0.4.0
 
 - Experimental Windows 11 local-account console login after logout or boot,
@@ -10,7 +23,7 @@
   allow helper-only deployment with `-SkipPowerShell`.
 - Publish complete x64/x86 binaries, SHA256 checksums, Skill and usage documents.
 - Prepare the public source repository, MIT license and Windows build CI.
-- Publish as Remote Windows SSH Skill; retain the `remote-windows` Skill name,
+- Publish as SSH Remote Desktop; retain the `remote-windows` Skill name,
   `ra.exe` command and original deployment paths for compatibility.
 
 Login remains experimental: the selected local account's standard password UI

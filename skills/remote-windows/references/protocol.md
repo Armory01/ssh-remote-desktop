@@ -1,4 +1,4 @@
-# RemoteAgent protocol 1
+# SSH Remote Desktop protocol 1
 
 `ra status`, `ra windows [--elevated]`, `ra observe [--window HWND] [--elevated]`, `ra launch --exe PATH [--arg VALUE] [--elevated]` are convenient text commands. `ra call` reads one UTF-8 JSON request from stdin until EOF. The structured form is preferred for paths, Chinese, quotes and batches.
 

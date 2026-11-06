@@ -1,5 +1,7 @@
 # Contributing
 
+**English** | [简体中文](CONTRIBUTING.zh-CN.md)
+
 Issues and pull requests are welcome. Include the helper version, Windows build,
 controller shell version, request operation and error code when reporting a bug.
 Remove credentials, private addresses and unrelated desktop content from logs
