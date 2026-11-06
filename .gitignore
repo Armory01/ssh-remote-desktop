@@ -1,0 +1,15 @@
+/build/
+/.artifacts/
+/.test-output/
+*.user
+*.pdb
+*.obj
+*.ilk
+*.log
+/dist/
+/.build-output.txt
+/incident-evidence/
+.vs/
+.env
+.env.*
+!.env.example
