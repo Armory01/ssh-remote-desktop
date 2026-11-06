@@ -44,6 +44,8 @@ SSH 可用后，Agent 自动下载、校验和部署小巧的原生 helper；
   不需要专用本地控制客户端或远程桌面客户端。
 - **按需运行，结束退出。** 不增加 helper 常驻服务，也无需每台电脑运行一个完整的
   AI Agent，由 Windows 按需启动短期桌面 worker。
+- **无显示器也可按需准备桌面。** Windows 11 x64 下，Agent 可以通过 SSH 检测缺失的
+  显示输出并安装固定版本的 VirtualDrivers 驱动，无需接显示器、保持 RDP 或增加 helper 常驻服务。
 - **实际操作桌面。** 支持截图、UI Automation、鼠标键盘、中文输入、程序启动与动作批处理。
 - **截图一次返回。** 操作结果和原始图片字节通过同一次 SSH 响应返回，
   无需 Base64，也不需要再连接一次取图。
@@ -104,13 +106,14 @@ Start-Service -Name sshd
 | 控制端 | Windows，已有 **PowerShell 7**、SSH/SCP 和 Agent 的 Shell 工具。 |
 | Agent | 提供 Codex、Claude Code、DeepSeek Harness 使用说明；目前完整端到端验收在 Codex 完成。识图需要可用的图片工具与视觉模型。 |
 | 桌面 | 同一账户已登录解锁，有有效显示输出；本地控制台不需要保持 RDP 连接。 |
+| 无显示器 | 实验性支持 Windows 11 x64、x64 helper、管理员 SSH；可选装 VirtualDrivers 驱动，见[说明](docs/HEADLESS.zh-CN.md)。 |
 | 登录／解锁 | 实验性支持 Windows 11 同一本地账户的标准密码界面，要求 SSH 已具备管理员高完整性权限。 |
 
 Agent 还可以在**远端**缺少 PowerShell 7 时自动全局安装，官方安装包经校验后在控制端缓存。
 原生 helper 本身不依赖 PowerShell；当前控制端脚本要求控制端已有 PowerShell 7。
 
 macOS/Linux 桌面目标、旧 Windows、PIN/Hello/MFA 和强制 Ctrl+Alt+Del 尚不在验收范围。
-无物理显示器时，截图仍需要可用的真实或虚拟显示输出。详见[验收说明](docs/TEST_RESULTS.zh-CN.md)。
+无物理显示器时，Agent 可按需准备虚拟显示输出；驱动由 Windows 持续加载，helper 本身仍按请求运行。详见[无显示器说明](docs/HEADLESS.zh-CN.md)和[验收说明](docs/TEST_RESULTS.zh-CN.md)。
 
 ## 更多资料
 

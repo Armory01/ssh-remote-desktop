@@ -2,7 +2,7 @@
 param()
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$version='0.4.2'
+$version='0.5.0'
 $dest=Join-Path $root "dist/$version"
 [IO.Directory]::CreateDirectory($dest)|Out-Null
 $hashes=[Collections.Generic.List[string]]::new()

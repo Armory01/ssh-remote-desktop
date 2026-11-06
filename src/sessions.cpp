@@ -135,7 +135,7 @@ json status() {
     wchar_t hostname[256]{}; DWORD n=256; GetComputerNameW(hostname,&n);
     return {{"version",version},{"protocol",1},{"hostname",utf8(hostname)},{"account",utf8(account_name())},{"user_sid",sid},{"os",platform_info()},
         {"process_session_id",process_session()},{"console_session_id",WTSGetActiveConsoleSessionId()},{"uptime_ms",GetTickCount64()},{"privileges",process_privileges().describe()},{"input_desktop",on_input_desktop()},{"sessions",all},
-        {"capabilities",{"windows","observe","act","launch","uia","png","jpeg","batch","elevated_worker","experimental_desktop_probe","experimental_password_unlock","experimental_local_password_login"}}};
+        {"capabilities",{"windows","observe","act","launch","uia","png","jpeg","batch","elevated_worker","experimental_desktop_probe","experimental_password_unlock","experimental_local_password_login","experimental_virtual_display"}}};
 }
 void enable_dpi_awareness() {
     HMODULE user=GetModuleHandleW(L"user32.dll");

@@ -4,7 +4,7 @@
 
 C++ 单文件 Windows 桌面 helper，通过现有 SSH 调用。控制端使用 Agent 已有的 Shell、SSH/SCP 和图片读取工具，不需要 MCP、本地 RemoteAgent 客户端或额外 C++ 运行库。
 
-当前版本 **0.4.2**：窗口枚举、PNG/JPEG 截图、鼠标/键盘/中文输入、UIA 读取与操作、GUI 程序启动、动作批处理、按需高权限 worker、实验性的临时 SYSTEM 密码解锁/Windows 11 本地账户登录，以及自动部署和更新。远端先开通管理员 SSH；Agent 可在开机后尚无人登录或注销后，按需登录同一本地账户的控制台。
+当前版本 **0.5.0**：窗口枚举、PNG/JPEG 截图、鼠标/键盘/中文输入、UIA 读取与操作、GUI 程序启动、动作批处理、按需高权限 worker、实验性的临时 SYSTEM 密码解锁/Windows 11 本地账户登录，以及自动部署和更新。新增可选的 [Windows 11 x64 无显示器支持](HEADLESS.zh-CN.md)：由 Agent 通过 SSH 按需安装 VirtualDrivers 驱动，不增加 helper 常驻服务。远端先开通管理员 SSH；Agent 可在开机后尚无人登录或注销后，按需登录同一本地账户的控制台。
 
 ## 使用
 
@@ -14,7 +14,7 @@ C++ 单文件 Windows 桌面 helper，通过现有 SSH 调用。控制端使用 
 
 ```pwsh
 # 一次部署，之后相同文件直接复用；不同文件先校验再替换。
-& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.2/windows-x64/ra.exe
+& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.5.0/windows-x64/ra.exe
 
 & ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"status"}'
 & ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows"}'
@@ -115,9 +115,9 @@ $request = $null; $passwordText = $null
 缓存按版本／架构分目录，下载先写唯一临时文件，SHA256 与微软签名通过后才放入正式缓存。已有缓存重新校验后复用，损坏缓存重新获取。MSI 不塞进 Skill 发布包；离线包可通过 `-PowerShellMsiPath`（独立安装脚本使用 `-MsiPath`）导入，缓存根目录可用 `-PowerShellCacheDirectory` 覆盖。
 
 ```pwsh
-& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.2/windows-x64/ra.exe
+& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.5.0/windows-x64/ra.exe
 # 只部署 helper，或指定已下载的官方 MSI：
-& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.2/windows-x64/ra.exe -SkipPowerShell
+& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.5.0/windows-x64/ra.exe -SkipPowerShell
 & ./skills/ssh-remote-desktop/scripts/Install-Pwsh.ps1 -Computer win-test -MsiPath '<官方 MSI 路径>'
 ```
 
@@ -156,7 +156,7 @@ GUI 程序优先通过 `CREATE_BREAKAWAY_FROM_JOB` 启动。任务调度器禁�
 
 - 实机已验证：Windows 11 x64、Windows OpenSSH、Windows 控制端 PowerShell 7；x64 helper 操作 x64/x86 程序，x86 helper 在该 x64 系统上的基本调用也通过。Win7 SP1/Server 2008 R2 SP1 是编译兼容目标，**尚未实机验证**，不是已认证支持范围。
 - SSH 账户必须与图形登录账户相同。按需高权限 worker 要求调用端已有管理员权限；它不创建额外管理员身份。0.4.0 增加 Win11 本地账户在开机后或注销后的控制台密码登录；RDP disconnected 重连、PIN/Hello、强制 Ctrl+Alt+Del 和通用 UAC 安全桌面操作仍不在本轮验收范围。用户授权内的普通软件登录与确认操作可以自动执行，Skill 不将登录或提权列为一律禁止的操作。
-- 截图是 GDI 可见桌面像素。被遮挡窗口可能包含遮挡内容；先 `focus` 再截图。本地控制台桌面已登录解锁且有有效显示输出时不需要 RDP。使用 RDP 会话时，最小化或断开客户端可能导致画面停滞、会话断开或锁定；这些状态需要单独处理。没有显示输出的 headless/已断开桌面不在当前验收范围。没有物理显示器不阻止 Windows 登录；GUI 截图和点击另需显卡/虚拟机/虚拟显示驱动/假负载提供有效显示目标，不能把“未接显示器”等同于“无法登录”。
+- 截图是 GDI 可见桌面像素。被遮挡窗口可能包含遮挡内容；先 `focus` 再截图。本地控制台桌面已登录解锁且有有效显示输出时不需要 RDP。使用 RDP 会话时，最小化或断开客户端可能导致画面停滞、会话断开或锁定；这些状态需要单独处理。没有物理显示器不阻止 Windows 登录；0.5.0 的 VirtualDrivers 本地控制台路径已在真实拔线与重启后验收，见[无显示器说明](HEADLESS.zh-CN.md)。RDP 断开会话的自动重连不在该功能范围。
 - UIA 节点有数量、深度和时间预算。只读观察使用独立 COM 线程，超过约 3 秒返回截图及 UIA 警告，随本次进程退出回收线程；修改控件的 UIA 调用仍可能阻塞，最终由整次请求超时回收 worker，动作结果可能未知。不会自动重放动作。
 - SSH 断线不代表已提交动作没执行，已接收的批次可能继续到超时。超时/断线后先观察状态，再决定是否重试。输入完成仅表示 API 接受或事件已入队，需要检查应用结果。
 - 当前接收/部署附件验证的是 Windows + PowerShell 7。POSIX 控制端可使用同一协议，但本项目尚未提供并验收无额外依赖的 POSIX 接收脚本。

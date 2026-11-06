@@ -26,7 +26,7 @@ static int run(int argc,wchar_t** argv) {
             return ra::worker_main(pipe,timeout,task,system);
         }
         if(argc<2 || std::wstring(argv[1])==L"--help") {
-            std::string help=std::string("SSH Remote Desktop ")+ra::version+"\nra status | windows | observe | desktop_probe | launch --exe PATH [--arg VALUE] | act | call\n"
+            std::string help=std::string("SSH Remote Desktop ")+ra::version+"\nra status | display | windows | observe | desktop_probe | launch --exe PATH [--arg VALUE] | act | call\n"
                 "Desktop commands accept --elevated (requires an already elevated caller).\n"
                 "Windows login/unlock use call with credentials on stdin, never password arguments.\n"
                 "call/act: one UTF-8 JSON request on stdin, followed by EOF. Output: JSON line + image_bytes raw bytes.\n";

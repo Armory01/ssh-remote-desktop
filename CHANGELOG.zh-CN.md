@@ -2,6 +2,16 @@
 
 [English](CHANGELOG.md) | **简体中文**
 
+## 0.5.0
+
+- 新增可选的 Windows 11 x64 无显示器支持：固定 VirtualDrivers driver-only 包，
+  由同一个 helper 使用原生 SetupAPI 安装。
+- 新增 `display` 状态检查、按需准备、禁用与移除，截图健康检查、设备归属记录及
+  显式的仅虚拟屏布局；复用已有可用输出，不重复创建显示器。
+- 新增控制端校验缓存与 SSH/SCP 部署，不要求 MCP、第三方安装工具、控制面板或自定义
+  常驻服务。可选的 UMDF 驱动由 Windows 持续加载。
+- 增加无显示器部署与重启登录验收，更新 Skill 和中英文说明，明确发布者信任、离线包与边界。
+
 ## 0.4.2
 
 - Skill 名称与源码目录统一改为 `ssh-remote-desktop`，升级时替换旧的 `remote-windows` Skill 目录。

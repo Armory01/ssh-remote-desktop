@@ -2,6 +2,19 @@
 
 **English** | [简体中文](CHANGELOG.zh-CN.md)
 
+## 0.5.0
+
+- Add optional Windows 11 x64 headless display support using a pinned
+  VirtualDrivers driver-only package and native SetupAPI in the same helper.
+- Add `display` status/ensure/disable/remove, capture-health checks, managed
+  device ownership and explicit virtual-only topology selection. Reuse existing
+  usable outputs and avoid duplicate monitors.
+- Add controller-side verified driver caching and SSH/SCP deployment; no MCP,
+  third-party installer, control app or custom resident service. The optional
+  UMDF driver is persistently loaded by Windows while enabled.
+- Add headless deployment tests and reboot/login validation; update the Skill
+  and English/Chinese guides with publisher trust, offline packages and limits.
+
 ## 0.4.2
 
 - Rename the installed Skill and its source directory to `ssh-remote-desktop`,

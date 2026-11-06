@@ -1,6 +1,6 @@
 ---
 name: ssh-remote-desktop
-description: Deploy and use the SSH Remote Desktop Windows helper over an existing SSH connection to transfer files, launch programs, inspect UIA, take screenshots, operate a Windows desktop, and sign in to a Windows 11 local account. Use for remote Windows GUI tasks, not ordinary Linux SSH administration.
+description: Deploy and use the SSH Remote Desktop Windows helper over SSH to transfer files, launch programs, inspect UIA, take screenshots, operate a Windows desktop, sign in to a Windows 11 local account, and prepare a headless Windows 11 x64 display. Use for remote Windows GUI tasks, not ordinary Linux SSH administration.
 ---
 
 Use existing SSH/SCP and the Agent's native image reader. No MCP or dedicated local controller client is required. The target needs working SSH. Ordinary GUI commands need an unlocked same-account graphical session; helper 0.3.0 adds password unlock, and 0.4.0 adds Windows 11 local-account console sign-in after logout or boot through an already elevated SSH login. A helper is deployed automatically; the user does not install a runtime or start a worker.
@@ -9,10 +9,10 @@ Use existing SSH/SCP and the Agent's native image reader. No MCP or dedicated lo
 
 ### Obtain the matching helper
 
-This Skill is distributed from https://github.com/xienan2010/ssh-remote-desktop. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/ssh-remote-desktop/releases/download/v0.4.2/ssh-remote-desktop-0.4.2.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteDesktop/releases/0.4.2`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
+This Skill is distributed from https://github.com/xienan2010/ssh-remote-desktop. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/ssh-remote-desktop/releases/download/v0.5.0/ssh-remote-desktop-0.5.0.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteDesktop/releases/0.5.0`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
 
-- x64 0.4.2: `476a4f615b6ff8014461e2cdf9926c77891a20fda2fd2807a862d4e7b8b96c5d`
-- x86 0.4.2: `0c01c09abe61e97007ea8889ce50e4f05785c25b61726a7c3a1d1e49f63b70d3`
+- x64 0.5.0: `8e396052c1c0e20f8ea4a0cf95e401a4cab053fdb3d02581afc2c60cf7d01144`
+- x86 0.5.0: `a989fdc841ef356da6b0f8394a79c3d14be7a7ec751fe15d2f20d7801b530403`
 
 Reuse a verified cached binary; do not redownload for every command. The controller scripts below remain the installed Skill's adjacent scripts. No compiler, local controller binary or MCP setup is needed on the controller. A mismatched hash is a deployment failure, not permission to execute the binary.
 
@@ -33,6 +33,16 @@ The deploy script compares hashes and reuses an identical helper, otherwise stag
 The supplied controller scripts currently require PowerShell 7 and are validated on Windows. For other controllers, read [the wire contract](references/protocol.md); do not install another runtime just to receive an image. If the available shell cannot safely receive binary output, report the missing receiver rather than feeding binary data through a text pipeline.
 
 ## Observe, act, verify
+
+For a Windows 11 x64 target without a monitor, read [headless setup](references/headless.md).
+Helper 0.5.0 adds `display` diagnostics and optional pinned VirtualDrivers setup
+through `scripts/Ensure-Display.ps1`. Reuse usable existing displays; install only
+when output is absent or virtual-display setup is explicitly requested. This can
+prepare display output before the separate login/unlock flow. No RDP is required.
+For initial GUI preparation or after reboot, if `status` advertises
+`experimental_virtual_display` on Windows 11 x64 and the caller is already high,
+read `display status` once to detect missing output. Follow the headless flow when
+needed; do not repeat this probe before every click or install for a lock/capture error.
 
 1. Read `status`. Session 0 describes the SSH process, not a graphical login. `sessions` also includes empty-user service/listener/pre-login rows; find the row matching `console_session_id`. If the console is signed out, use the login flow below; for an existing locked same-account desktop use unlock; otherwise read `windows`. Ordinary GUI commands still find same-account active sessions. Resolve `AMBIGUOUS_SESSION` with `params.session_id`.
 2. Select the returned numeric HWND and inspect it with `observe`. Pass `expected` from the most recent window (`pid`, `process_start`, `bounds`) when acting. Observe again after a window moves or a selector becomes stale.

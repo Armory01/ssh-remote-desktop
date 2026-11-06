@@ -4,7 +4,8 @@ param(
     [Parameter(Mandatory)][securestring]$Password,
     [ValidateSet('Logout','Reboot')][string]$Mode='Logout',
     [string[]]$SshOption=@(),
-    [string]$RemotePath='.\RemoteAgent\ra.exe'
+    [string]$RemotePath='.\RemoteAgent\ra.exe',
+    [switch]$RequireVirtualDisplay
 )
 # Explicitly logs out or reboots the authorized test host. No credential retries.
 $ErrorActionPreference='Stop'
@@ -49,6 +50,10 @@ if($Mode -eq 'Reboot'){Expect ($signedOut.result.uptime_ms -lt $before.result.up
 $signedOut|ConvertTo-Json -Depth 14|Set-Content (Join-Path $out "login-$($Mode.ToLowerInvariant())-signed-out.json")
 $probe=Good (Call desktop_probe @{session_id=$signedOut.result.console_session_id;format='jpeg'}) 'SYSTEM observes signed-out console with explicit session ID'
 Expect ($probe.worker.integrity_level -eq 'system' -and $probe.worker.session_id -eq $signedOut.result.console_session_id) 'worker reaches the pre-login console'
+if($RequireVirtualDisplay){
+    $display=Good (Call display @{action='status'} 120000) 'virtual display before console login'
+    Expect ($display.result.virtual_active -and $display.result.capture_ok -and $display.result.devices.Count -eq 1) 'virtual output and capture survive reboot or logout before login'
+}
 $normal=Call windows
 Expect (!$normal.ok -and $normal.error.code -eq 'NO_INTERACTIVE_SESSION') 'ordinary worker cannot invent a user desktop'
 $other=Call login @{user='RemoteAgent-NotTheSshAccount'}
@@ -67,6 +72,10 @@ Expect ($ready.result.input_desktop -eq 'Default' -and $ready.result.wts.locked 
 $after=Good (Call status) 'post-login account status'
 $actual=@($after.result.sessions|Where-Object id -eq $after.result.console_session_id)[0]
 Expect ($actual.same_user -and $actual.state -eq 'active') 'actual console SID matches the SSH account'
+if($RequireVirtualDisplay){
+    $display=Good (Call display @{action='status'} 120000) 'virtual display after console login'
+    Expect ($display.result.virtual_active -and $display.result.capture_ok -and $display.result.desktop_ready -and $display.result.devices.Count -eq 1) 'virtual display stays usable after password login'
+}
 $windows=Good (Call windows) 'ordinary window enumeration after login'
 Expect (!$windows.worker.elevated -and $windows.worker.integrity_level -eq 'medium') 'SYSTEM privilege does not persist into ordinary worker'
 $noop=Good (Call login) 'already-signed-in no-op'

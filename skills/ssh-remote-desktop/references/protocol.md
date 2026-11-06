@@ -129,6 +129,35 @@ If profile startup exceeds the wait budget after authentication, the reply may i
 
 Password-field/account-detection failures report password_submitted=false. LOGIN_NOT_CONFIRMED after submission carries outcome_unknown=true: observe actual console state before any explicit retry. There is no credential-guessing or automatic retry loop. Forced Ctrl+Alt+Del, PIN/Hello/MFA, new-profile setup pages and old Windows are separate unvalidated scenarios. Normal GUI operations after sign-in continue to use their ordinary/high worker policies; SYSTEM privilege is not sticky.
 
+## Optional virtual display (experimental, 0.5.0+)
+
+`experimental_virtual_display` advertises `op:display`. It requires an already
+high-integrity SSH caller and uses the current same-account or pre-login console.
+Default timeout: 120000 ms. Driver changes require Windows 11 x64 and the x64 helper.
+
+| params.action | Behavior |
+| --- | --- |
+| `status` (default) | Read display topology, VirtualDrivers devices and capture health; optional `screenshot:true` returns the image in the usual response. |
+| `ensure` | Reuse usable output, otherwise install/re-enable and activate one VirtualDrivers monitor. |
+| `disable` / `remove` | Affect only the device recorded as created by this project. Removal retains config, driver store and publisher trust. |
+
+`ensure` accepts boolean `force_virtual` (activate alongside existing output),
+`virtual_only` (persist only the virtual output), `trust_publisher` (allow the
+pinned leaf certificate in machine TrustedPublisher), and string `package_path`
+(remote directory containing the exact four pinned files). The controller's
+`Ensure-Display.ps1` handles cache/download/upload; read [headless setup](headless.md).
+No general arbitrary-driver installer is exposed. Existing config is retained.
+
+Results include `active_paths`, `active_path_count`, `devices` (instance ID,
+ownership, started, problem code), `virtual_active`, `capture_ok`, `usable_display`,
+`desktop_ready`, dimensions, `changed` and, after setup, `installation` metadata.
+`needs_virtual_display` reports no active display paths; it is not inferred from
+black pixels. Setup errors include `DRIVER_PACKAGE_REQUIRED`, `DRIVER_HASH_MISMATCH`,
+`PUBLISHER_TRUST_REQUIRED`, `DRIVER_SIGNATURE_INVALID`, `DRIVER_INSTALL_FAILED`,
+`DRIVER_STATE_CONFLICT`, `VIRTUAL_DISPLAY_NOT_READY` and `DISPLAY_CAPTURE_UNAVAILABLE`.
+An activation failure after installation carries `installation` and
+`outcome_unknown`; inspect state/reboot requirements instead of reinstalling.
+
 ## Deployment-managed PowerShell 7 (0.4.0 attachments)
 
 Deploy-Ra.ps1 automatically invokes Install-Pwsh.ps1 after helper deployment or reuse. The result contains a `powershell` object with changed/path/version, or skipped/reason. `-SkipPowerShell` opts out. `-PowerShellMsiPath` supplies the pinned offline package and `-PowerShellCacheDirectory` overrides the controller cache. Standalone Install-Pwsh.ps1 uses `-MsiPath` and `-CacheDirectory`.

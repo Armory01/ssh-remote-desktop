@@ -112,7 +112,7 @@ json normalize_request(json request) {
     if(!request["params"].is_object()) throw Error("INVALID_REQUEST", "params must be an object");
     if(!request["params"].contains("elevated")) request["params"]["elevated"] = false;
     if(!request["params"]["elevated"].is_boolean()) throw Error("INVALID_REQUEST", "params.elevated must be a boolean");
-    if(!request.contains("timeout_ms")) request["timeout_ms"] = request["op"]=="login"?120000:30000;
+    if(!request.contains("timeout_ms")) request["timeout_ms"] = request["op"]=="login" || request["op"]=="display"?120000:30000;
     if(!request["timeout_ms"].is_number_integer()) throw Error("INVALID_REQUEST", "timeout_ms must be an integer");
     int64_t t = request["timeout_ms"].get<int64_t>();
     if(t < 1000 || t > 120000) throw Error("INVALID_REQUEST", "timeout_ms must be between 1000 and 120000");

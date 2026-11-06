@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$Computer, [string[]]$SshOption=@(), [string]$FixtureExecutable)
+param([Parameter(Mandatory)][string]$Computer, [string[]]$SshOption=@(), [string]$FixtureExecutable, [string]$RemotePath='.\RemoteAgent\ra.exe')
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
 $receiver=Join-Path $root 'skills/ssh-remote-desktop/scripts/Receive-Ra.ps1'
@@ -9,7 +9,7 @@ $checks=[Collections.Generic.List[string]]::new()
 function Expect($Condition,[string]$Name) { if(!$Condition){throw "FAILED: $Name"};$checks.Add($Name) }
 function Call([string]$Op,[hashtable]$Params=@{},[int]$Timeout=30000) {
     $request=@{op=$Op;params=$Params;timeout_ms=$Timeout}|ConvertTo-Json -Depth 30 -Compress
-    $raw=& $receiver -Computer $Computer -Request $request -SshOption $SshOption -OutputDirectory $out
+    $raw=& $receiver -Computer $Computer -Request $request -SshOption $SshOption -OutputDirectory $out -RemotePath $RemotePath
     return ($raw|ConvertFrom-Json -AsHashtable)
 }
 function Good($Result,[string]$Name) { Expect $Result.ok "$Name ($($Result.error.message))";return $Result }

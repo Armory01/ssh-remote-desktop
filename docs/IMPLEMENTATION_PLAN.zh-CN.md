@@ -2,6 +2,8 @@
 
 [English](IMPLEMENTATION_PLAN.md) | **简体中文** · [返回 README](../README.zh-CN.md)
 
+> 2026-11-06（0.5.0）：新增可选的 Windows 11 x64 无显示器支持。同一个 ra.exe 原生安装固定的 VirtualDrivers 驱动，临时 SYSTEM worker 查询、激活和持久保存显示布局；控制端缓存包并经 SSH/SCP 上传，不增加自定义服务。真实拔线和重启登录已验收，详见 HEADLESS.zh-CN.md。
+>
 > 2026-11-06（0.4.0）：追加 Windows 11 本地账户开机后／注销后按需登录；默认部署流程接入可缓存的全局 PowerShell 7 MSI 安装。已做真实注销、重启和缺失安装验证。初版范围保留作历史设计，当前能力以 README、协议和 TEST_RESULTS 为准。
 
 > 2026-11-06：按后续授权新增 0.3.0 临时 SYSTEM 密码解锁原型和可选的全局 PowerShell 7 MSI 部署。本文初版的未实现范围是历史设计；最新能力、边界和实测结果以 README 与 TEST_RESULTS 为准。未增加常驻服务或持久自动登录。

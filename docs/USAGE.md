@@ -4,7 +4,7 @@
 
 These commands are for agents, developers and troubleshooting. For normal
 installation, use the [copyable agent prompt](../README.md#install-copy-this-to-your-agent).
-Current version: **0.4.2**, protocol **1**.
+Current version: **0.5.0**, protocol **1**.
 
 ## Connect and deploy
 
@@ -21,7 +21,7 @@ From an extracted release directory:
 ```
 
 For a source checkout, the packaged binary is under
-`dist/0.4.2/windows-x64/ra.exe`. Check its release SHA256 before deployment.
+`dist/0.5.0/windows-x64/ra.exe`. Check its release SHA256 before deployment.
 The default remote path remains `RemoteAgent/ra.exe` under the SSH user's home;
 this path, the `ra.exe` command and internal task/pipe prefixes retain the early
 prototype names to preserve existing deployments.
@@ -166,6 +166,12 @@ Use the target's actual user path. If PATH has not refreshed, explicitly invoke
 `C:\Program Files\PowerShell\7\pwsh.exe` with correct path quoting.
 
 ## Desktop and transport notes
+
+For Windows 11 x64 without a monitor, use the optional [headless setup](HEADLESS.md).
+The agent can detect missing output and install a pinned VirtualDrivers driver
+through SSH using the same helper, with no custom resident service or RDP client.
+Already usable displays are reused. See the guide for publisher trust, explicit
+virtual-only testing and driver removal.
 
 A logged-in, unlocked local console with valid display output needs no RDP
 connection. RDP minimization/disconnection can suspend rendering, disconnect the

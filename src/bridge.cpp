@@ -2,9 +2,11 @@
 #include "sessions.hpp"
 #include "desktop.hpp"
 #include "system.hpp"
+#include "display.hpp"
 #include <taskschd.h>
 #include <sddl.h>
 #include <wtsapi32.h>
+#include <cfg.h>
 #include <algorithm>
 #include <cstring>
 
@@ -185,6 +187,37 @@ Reply run_in_session(const json& request,const Session& session,bool system=fals
 Reply dispatch(const json& request) {
     auto op=request.at("op").get<std::string>();
     if(op=="status") return success(request,status());
+    if(op=="display") {
+        if(!process_privileges().high())throw Error("ELEVATION_REQUIRED","Console display diagnostics and setup require an already elevated SSH login");
+        const auto& p=request["params"];auto action=p.value("action",std::string("status"));
+        for(const auto& key:{"force_virtual","virtual_only","trust_publisher","screenshot"})if(p.contains(key) && !p[key].is_boolean())throw Error("INVALID_REQUEST",std::string("params.")+key+" must be boolean");
+        if(action!="status" && action!="ensure" && action!="disable" && action!="remove")throw Error("INVALID_REQUEST","display action must be status, ensure, disable or remove");
+        if(action=="disable" || action=="remove")return success(request,change_virtual_device(action));
+        auto session=select_console_session(p,true);
+        if(action=="status")return run_in_session(request,session,true);
+        Handle lock(CreateMutexW(nullptr,FALSE,L"Local\\SSHRemoteDesktop.VirtualDisplay"));check_win(lock.valid(),"Create virtual display installation mutex");
+        DWORD wait=WaitForSingleObject(lock.get(),0);if(wait!=WAIT_OBJECT_0 && wait!=WAIT_ABANDONED)throw Error("DISPLAY_BUSY","Another virtual display setup is in progress");
+        struct Release {HANDLE h;~Release(){ReleaseMutex(h);}} release{lock.get()};
+        auto probe=request;probe["params"]["action"]="status";probe["params"]["screenshot"]=false;
+        auto before=run_in_session(probe,session,true);if(!before.header.value("ok",false))return before;
+        if(before.header["result"]["usable_display"]==true && !p.value("force_virtual",false) && !p.value("virtual_only",false)) {
+            if(p.value("screenshot",false)){probe["params"]["screenshot"]=true;before=run_in_session(probe,session,true);if(!before.header.value("ok",false))return before;}
+            before.header["result"]["changed"]=false;before.header["result"]["reused_existing_display"]=true;return before;
+        }
+        if(before.header["result"]["active_path_count"]!=0 && before.header["result"]["capture_ok"]==false && !p.value("force_virtual",false) && !p.value("virtual_only",false))throw Error("DISPLAY_CAPTURE_UNAVAILABLE","A display path exists but capture failed; inspect lock, session and capture errors before installing a driver",before.header["result"]);
+        auto devices=virtual_display_devices();json installation={{"installed",false},{"reboot_required",false}};
+        if(devices.size()>1)throw Error("AMBIGUOUS_VIRTUAL_DISPLAY","Multiple VirtualDrivers devices already exist",{{"devices",devices}});
+        if(devices.empty())installation=install_virtual_display(p);
+        else if(devices[0]["started"]!=true) {
+            if(devices[0]["managed"]==true && devices[0]["problem_code"]==CM_PROB_DISABLED)installation=change_virtual_device("enable");
+            else throw Error("DRIVER_STATE_CONFLICT","An existing VirtualDrivers device is not healthy; no replacement was attempted",{{"devices",devices}});
+        }
+        auto activate=request;activate["params"]["action"]="_activate";
+        auto result=run_in_session(activate,session,true);
+        if(result.header.value("ok",false)) {result.header["result"]["installation"]=installation;result.header["result"]["before"]=before.header["result"];result.header["result"]["changed"]=installation.value("installed",false) || installation.value("changed",false) || result.header["result"].value("changed",false);}
+        else {result.header["error"]["details"]["installation"]=installation;result.header["error"]["details"]["outcome_unknown"]=true;}
+        return result;
+    }
     if(op=="desktop_probe" || op=="unlock" || op=="login") {
         if(!process_privileges().high())throw Error("ELEVATION_REQUIRED","An elevated SSH/helper process is required for the temporary SYSTEM worker");
         if(op=="login") {

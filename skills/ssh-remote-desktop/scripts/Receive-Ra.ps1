@@ -12,7 +12,7 @@ $ErrorActionPreference = 'Stop'
 $requestObject = $Request | ConvertFrom-Json -AsHashtable
 if (!$requestObject.ContainsKey('id')) { $requestObject.id = [guid]::NewGuid().ToString() }
 if (!$requestObject.ContainsKey('protocol')) { $requestObject.protocol = 1 }
-if (!$requestObject.ContainsKey('timeout_ms')) { $requestObject.timeout_ms = if ($requestObject.op -eq 'login') { 120000 } else { 30000 } }
+if (!$requestObject.ContainsKey('timeout_ms')) { $requestObject.timeout_ms = if ($requestObject.op -in @('login','display')) { 120000 } else { 30000 } }
 $Request = $requestObject | ConvertTo-Json -Depth 40 -Compress
 $budget = if ($requestObject.timeout_ms) { [int]$requestObject.timeout_ms } else { 30000 }
 if ($budget -lt 1000 -or $budget -gt 120000) { throw 'timeout_ms must be between 1000 and 120000.' }

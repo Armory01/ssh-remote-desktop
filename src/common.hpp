@@ -10,7 +10,7 @@
 namespace ra {
 using json = nlohmann::json;
 using Microsoft::WRL::ComPtr;
-inline constexpr const char* version = "0.4.2";
+inline constexpr const char* version = "0.5.0";
 inline constexpr size_t max_header = 1024 * 1024;
 inline constexpr size_t max_image = 32 * 1024 * 1024;
 

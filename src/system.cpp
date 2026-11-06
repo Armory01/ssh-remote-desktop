@@ -1,6 +1,7 @@
 #include "system.hpp"
 #include "bridge.hpp"
 #include "desktop.hpp"
+#include "display.hpp"
 #include <taskschd.h>
 #include <uiautomation.h>
 #include <wtsapi32.h>
@@ -141,6 +142,7 @@ Reply execute_system_desktop(json& request) {
     HWINSTA station=OpenWindowStationW(L"WinSta0",FALSE,WINSTA_ALL_ACCESS);check_win(station!=nullptr,"Open interactive SYSTEM station");
     check_win(SetProcessWindowStation(station),"Attach interactive SYSTEM station");
     auto op=request.at("op").get<std::string>();
+    if(op=="display") {InputDesktop desktop(true);return execute_display_worker(request);}
     Handle unlockMutex;
     struct ReleaseMutexOnExit {HANDLE h=nullptr;~ReleaseMutexOnExit(){if(h)ReleaseMutex(h);}} unlockGuard;
     bool login=op=="login";

@@ -48,6 +48,9 @@ Use existing SSH host aliases, or provide a target address and account when aske
   agent on every computer. Windows starts short-lived desktop workers on demand.
 - **Real desktop interaction.** Screenshots, UI Automation, mouse, keyboard,
   Unicode input, program launch and action batches.
+- **Headless Windows, on demand.** On Windows 11 x64, the agent can detect a
+  missing display and install a pinned VirtualDrivers display driver over SSH.
+  No physical monitor, RDP connection or additional helper service is needed.
 - **Efficient image return.** A screenshot travels with its result in one SSH
   response, as raw image bytes. No Base64 or second transfer to retrieve the image.
 - **Elevated tasks when needed.** An already elevated SSH account can request a
@@ -116,6 +119,7 @@ not manually install or start our helper: the agent handles it over SSH.
 | Agents | Skill guidance for Codex, Claude Code and DeepSeek Harness; end-to-end validation currently in Codex. Image tasks need a working image tool and vision model. |
 | Desktop | An unlocked same-account desktop with an active display; a local console does not require an RDP connection. |
 | Login / unlock | Experimental: the same Windows 11 local account's standard password screen, using an already elevated SSH login. |
+| Headless display | Experimental Windows 11 x64 support with the x64 helper and administrator SSH. Optional VirtualDrivers driver; [details](docs/HEADLESS.md). |
 
 The agent can also install missing **remote** PowerShell 7 globally, using a
 verified official installer cached on the controller. The native helper itself

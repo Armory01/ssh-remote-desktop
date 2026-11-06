@@ -3,7 +3,7 @@
 **English** | [简体中文 / original design](IMPLEMENTATION_PLAN.zh-CN.md) · [README](../README.md)
 
 SSH Remote Desktop combines an agent Skill, ordinary SSH/SCP and one native
-Windows executable. Current release: **0.4.2**, wire protocol **1**. The original
+Windows executable. Current release: **0.5.0**, wire protocol **1**. The original
 2026-11-03 design and later implementation notes are preserved in the Chinese
 document; this page describes the delivered architecture.
 
@@ -62,6 +62,15 @@ is single-attempt, and success requires the actual WTS account/session and an
 unlocked Default desktop. Unsupported login layouts return a specific error.
 
 ## Deployment and compatibility
+
+Version 0.5.0 adds optional [headless display setup](HEADLESS.md): the SSH front
+end performs a pinned machine-wide driver installation through native SetupAPI;
+an existing temporary SYSTEM console worker queries and persists display topology.
+The controller caches and uploads the driver-only package over SSH/SCP. No new
+helper executable, custom service, control panel or transport is introduced.
+The optional UMDF driver remains loaded by Windows while enabled, independently
+of per-request workers. Existing usable displays and other vendors' devices are
+preserved unless a topology change is explicitly requested.
 
 The Skill installs on the controller once. It obtains its pinned release,
 verifies the helper hash and uploads it to the existing remote user directory.

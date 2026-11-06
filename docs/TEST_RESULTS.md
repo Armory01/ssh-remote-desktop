@@ -2,9 +2,8 @@
 
 **English** | [简体中文 / detailed test history](TEST_RESULTS.zh-CN.md) · [README](../README.md)
 
-Current release: **0.4.2**. The desktop implementation was validated through
-0.4.0; 0.4.1–0.4.2 change branding, Skill naming, version metadata and documentation, without changing
-desktop behavior. Its binaries are rebuilt and unit-tested. The Chinese history
+Current release: **0.5.0**. Adds real headless VirtualDrivers validation to the
+previous desktop, elevation, unlock and login tests. The Chinese history
 preserves version-by-version test details from 2026-11-03 through 2026-11-06.
 Hostnames, addresses and user names in public examples are documentation values.
 
@@ -20,6 +19,40 @@ Hostnames, addresses and user names in public examples are documentation values.
 | CI | Windows runner builds and unit-tests both architectures |
 
 ## Passed desktop and deployment checks
+
+### 0.5.0: physically unplugged headless console, 2026-11-06
+
+The user disconnected every HDMI/DP display cable and RDP. The target was
+Windows 11 x64 build 26200 with an AMD GPU and a pre-existing GameViewer virtual
+adapter, which was retained. Initially Windows still reported the old physical
+display and could capture it: default `ensure` correctly reused it. We then
+explicitly selected VirtualDrivers as the **only active display path**, verified
+by QueryDisplayConfig's `ROOT\DISPLAY` adapter path and provider identity.
+
+- VirtualDrivers 25.7.23 installed through the helper without a reboot;
+  one 1920×1080 virtual monitor was active, with no physical/RDP output required.
+- 18 headless setup checks: missing package, corrupted-file hash rejection before
+  device creation, verified cached/offline package deployment, same-response
+  screenshot, repeated ensure, one device only, disable and on-demand re-enable.
+- 18 ordinary GUI smoke checks on the virtual output: PNG/JPEG, actual image
+  inspection, UIA, Unicode mouse/keyboard input, GUI process survival and SCP
+  roundtrip of a Chinese/spaced filename. Repeated after reboot recovery.
+- 25 reboot/login checks: actual uptime reset, SSH recovery, virtual display and
+  capture available **before graphical login**, one password submission, matching
+  account SID and unlocked Default desktop, then usable virtual display and
+  ordinary medium-integrity GUI workers. No persistent autologon.
+- Final inspection: no remaining helper workers, helper tasks, driver uploads,
+  protected staging folders or custom helper services. The pre-existing display
+  adapters remained present. Global PowerShell 7 was reused.
+
+The pinned SignPath **leaf** certificate was added to machine TrustedPublisher
+for silent driver installation; no root certificate was imported. Secure Boot
+was already **off** on this test machine and was not changed. Secure Boot-on and
+memory-integrity policy compatibility remain unvalidated; no test-signing or
+signature-policy workaround was enabled. The optional UMDF driver remains loaded
+by Windows while its monitor is enabled. See [headless setup](HEADLESS.md).
+
+### Previously validated desktop checks
 
 | Area | Observed result |
 | --- | --- |
@@ -66,7 +99,7 @@ test adapters stay outside release archives and source-control submissions.
   compilation target does not establish runtime compatibility.
 - Complex account selection, PIN/Hello/smartcard/MFA, forced Ctrl+Alt+Del,
   new-profile onboarding or disconnected-RDP reconnection.
-- Physically unplugged monitors, every display power state, mixed-DPI physical
+- Every display power state, mixed-DPI physical
   multi-monitor layouts or every vendor's UIA provider.
 
 A queued input event is not application completion, a successful logon token is
