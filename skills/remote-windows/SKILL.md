@@ -9,7 +9,7 @@ Use existing SSH/SCP and the Agent's native image reader. No MCP or dedicated lo
 
 ### Obtain the matching helper
 
-This Skill is distributed from https://github.com/xienan2010/remote-windows-ssh-skill-skill. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/remote-windows-ssh-skill-skill/releases/download/v0.4.0/remote-windows-ssh-skill-0.4.0.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteWindows/releases/0.4.0`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
+This Skill is distributed from https://github.com/xienan2010/remote-windows-ssh-skill. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/remote-windows-ssh-skill/releases/download/v0.4.0/remote-windows-ssh-skill-0.4.0.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteWindows/releases/0.4.0`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
 
 - x64 0.4.0: `d1697b0149d8c758ed0bb9564e4405b873d848929fdcdae28f3ddb6b1c255b6a`
 - x86 0.4.0: `4fa4c95ebac67825074ff5b48c3eae04726ba87991478acd9d205041f7c7c2ee`

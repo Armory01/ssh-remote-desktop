@@ -6,7 +6,7 @@
 
 A skill and single-file helper for Windows desktop automation over plain SSH. One native executable, on-demand workers, no MCP server and no resident helper service.
 
-[下载 0.4.0](https://github.com/xienan2010/remote-windows-ssh-skill-skill/releases/tag/v0.4.0) · [详细用法](docs/USAGE.md) · [协议](skills/remote-windows/references/protocol.md) · [实测范围](docs/TEST_RESULTS.md) · [MIT License](LICENSE)
+[下载 0.4.0](https://github.com/xienan2010/remote-windows-ssh-skill/releases/tag/v0.4.0) · [详细用法](docs/USAGE.md) · [协议](skills/remote-windows/references/protocol.md) · [实测范围](docs/TEST_RESULTS.md) · [MIT License](LICENSE)
 
 ## 为什么做这个
 
@@ -41,7 +41,7 @@ Agent 已经擅长用 SSH 管理 Linux，但 Windows 软件经常需要图形界
 
 ### 1. 下载完整发布包
 
-从 [Releases](https://github.com/xienan2010/remote-windows-ssh-skill-skill/releases) 下载 **`remote-windows-ssh-skill-0.4.0.zip`** 并解压。GitHub 自动生成的 Source code 压缩包不包含预编译 EXE。
+从 [Releases](https://github.com/xienan2010/remote-windows-ssh-skill/releases) 下载 **`remote-windows-ssh-skill-0.4.0.zip`** 并解压。GitHub 自动生成的 Source code 压缩包不包含预编译 EXE。
 
 发布包包含 `windows-x64/ra.exe`、`windows-x86/ra.exe`、`SHA256SUMS.txt`、完整 Skill 和使用文档。优先在 x64 系统使用 x64 helper，执行前核对校验文件。
 
@@ -49,7 +49,7 @@ Agent 已经擅长用 SSH 管理 Linux，但 Windows 软件经常需要图形界
 
 把完整的 `skills/remote-windows` 目录安装到当前 Agent 的技能目录，保留其中的 `scripts` 和 `references`，不要只复制 `SKILL.md`。也可以把仓库链接或本地发布包交给 Agent：
 
-> 请阅读 https://github.com/xienan2010/remote-windows-ssh-skill-skill，将 remote-windows Skill 安装到你的技能目录，按 Skill 的固定版本下载并校验 helper。之后通过 SSH 使用它操作我的 Windows 测试机。
+> 请阅读 <https://github.com/xienan2010/remote-windows-ssh-skill>，将 remote-windows Skill 安装到你的技能目录，按 Skill 的固定版本下载并校验 helper。之后通过 SSH 使用它操作我的 Windows 测试机。
 
 Skill 自带固定版本发布地址和 EXE 校验值，可在只有 Skill 的情况下取得匹配 helper。下载与远端部署使用现有 PowerShell、SSH/SCP，不引入 MCP。
 

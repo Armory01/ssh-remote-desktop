@@ -39,7 +39,7 @@
 | 记事本端到端 | 上传文本、SSH 启动真实 Windows 记事本、点击编辑区、中文输入、Ctrl+S 保存、SCP 下载后全文一致 |
 | Skill | bundled quick_validate 校验通过；接收和部署附件在本次真实测试中使用 |
 
-可复现的桌面 smoke 脚本为 [Remote-Smoke.ps1](https://github.com/xienan2010/remote-windows-ssh-skill-skill/blob/main/tests/Remote-Smoke.ps1)，初版每次含 17 项检查，并可切换 x64 / x86 测试窗口。截图、JSON 和下载文件位于本地忽略目录 `.test-output`；不随发布包分发认证测试工具或临时数据。
+可复现的桌面 smoke 脚本为 [Remote-Smoke.ps1](https://github.com/xienan2010/remote-windows-ssh-skill/blob/main/tests/Remote-Smoke.ps1)，初版每次含 17 项检查，并可切换 x64 / x86 测试窗口。截图、JSON 和下载文件位于本地忽略目录 `.test-output`；不随发布包分发认证测试工具或临时数据。
 
 以下图片为远端真实测试窗口，经 helper → SSH → 接收脚本返回的原始 PNG：
 
@@ -96,7 +96,7 @@
 
 普通模式回归时发现测试机存在高权限前台窗口，Windows 拒绝 medium worker 切换焦点。增加了对此类焦点失败的 `ELEVATION_REQUIRED` 诊断；回归脚本显式用高权限调用准备普通窗口的前台状态，其后的实际输入仍由 medium worker 执行。该问题与目标窗口本身是否高权限是两个不同的触发条件。
 
-可复现脚本：[Remote-Elevation.ps1](https://github.com/xienan2010/remote-windows-ssh-skill-skill/blob/main/tests/Remote-Elevation.ps1)，支持 `-FixtureExecutable` 和 `-RemotePath` 切换测试程序及 helper 位数。原始结果保存在 `.test-output/elevation-summary.json`、`elevated-observe.json`；以下为回传的真实截图：
+可复现脚本：[Remote-Elevation.ps1](https://github.com/xienan2010/remote-windows-ssh-skill/blob/main/tests/Remote-Elevation.ps1)，支持 `-FixtureExecutable` 和 `-RemotePath` 切换测试程序及 helper 位数。原始结果保存在 `.test-output/elevation-summary.json`、`elevated-observe.json`；以下为回传的真实截图：
 
 ![高权限窗口的实际输入结果](evidence/elevated-ui.png)
 
