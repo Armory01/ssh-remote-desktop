@@ -15,6 +15,25 @@ for you. Desktop workers start when needed and exit after each request.
 [OpenSSH setup](docs/SSH_SETUP.md) · [Advanced usage](docs/USAGE.md) ·
 [MIT License](LICENSE)
 
+## Use it like this
+
+Once installed, mention **`ssh-remote-desktop`** and describe the result you want:
+
+```text
+Use ssh-remote-desktop on win-test. Upload this test package, extract it,
+launch the application and complete the setup using the settings I provide.
+Show me a screenshot of the result, then download the application log.
+```
+
+To work on another computer, just name it in the next request:
+
+> Switch to office-pc and run the same test there.
+
+One Skill on your controlling agent, reused across your Windows computers.
+The agent handles the connection, helper deployment, file transfers and desktop
+commands. You describe the task without writing click or deployment scripts.
+Use existing SSH host aliases, or provide a target address and account when asked.
+
 ## Why use it?
 
 - **One familiar connection.** Files, commands and desktop operations all use SSH.
@@ -41,13 +60,15 @@ Paste this into **Codex, Claude Code, or another agent that can load Skills and
 execute shell commands**:
 
 ```text
-Install the remote-windows Skill from:
+Install the ssh-remote-desktop Skill from:
 https://github.com/xienan2010/ssh-remote-desktop
 
-Read skills/remote-windows/SKILL.md. Install the complete Skill folder,
+Read skills/ssh-remote-desktop/SKILL.md. Install the complete Skill folder,
 including its scripts and references, into your own supported user-level
 skills directory. Download the release pinned by the Skill and verify
 the helper's SHA256 before using it. Use existing SSH/SCP; do not set up MCP.
+Migrate an existing remote-windows installation to the new Skill name so
+only ssh-remote-desktop remains installed.
 
 After installation, ask which Windows SSH host I want to use. Reuse my
 existing SSH configuration where available. Once I provide the target,
@@ -55,13 +76,10 @@ handle helper deployment and environment checks for me, then report whether
 the desktop is ready. Do not require me to run low-level helper commands.
 ```
 
-Then give it a task, for example:
-
-> Use `win-test`: upload this test package, launch the application, inspect its
-> window, complete the setup and download the resulting log.
-
-The Skill stays named **`remote-windows`** for compatibility. Install it once on
-the controlling agent and reuse it across your Windows computers.
+The installed Skill is named **`ssh-remote-desktop`**, matching the project.
+For an installation from before 0.4.2, replace the old `remote-windows` Skill
+folder with the complete `ssh-remote-desktop` folder. Existing remote helper
+deployments and SSH configuration can be reused.
 
 ## First-time Windows preparation: enable SSH
 
@@ -112,7 +130,7 @@ a usable real or virtual display. See [validation details](docs/TEST_RESULTS.md)
 
 - [Advanced usage and troubleshooting](docs/USAGE.md)
 - [Architecture](docs/IMPLEMENTATION_PLAN.md)
-- [Skill and wire protocol](skills/remote-windows/SKILL.md)
+- [Skill and wire protocol](skills/ssh-remote-desktop/SKILL.md)
 - [Build and contribute](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
 

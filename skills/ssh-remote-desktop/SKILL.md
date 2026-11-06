@@ -1,5 +1,5 @@
 ---
-name: remote-windows
+name: ssh-remote-desktop
 description: Deploy and use the SSH Remote Desktop Windows helper over an existing SSH connection to transfer files, launch programs, inspect UIA, take screenshots, operate a Windows desktop, and sign in to a Windows 11 local account. Use for remote Windows GUI tasks, not ordinary Linux SSH administration.
 ---
 
@@ -9,10 +9,10 @@ Use existing SSH/SCP and the Agent's native image reader. No MCP or dedicated lo
 
 ### Obtain the matching helper
 
-This Skill is distributed from https://github.com/xienan2010/ssh-remote-desktop. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/ssh-remote-desktop/releases/download/v0.4.1/ssh-remote-desktop-0.4.1.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteDesktop/releases/0.4.1`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
+This Skill is distributed from https://github.com/xienan2010/ssh-remote-desktop. Use the supplied release binary when available. If only the Skill was installed, use the controller's existing PowerShell to download and expand the pinned complete release https://github.com/xienan2010/ssh-remote-desktop/releases/download/v0.4.2/ssh-remote-desktop-0.4.2.zip into a local cache (for example `%LOCALAPPDATA%/SSHRemoteDesktop/releases/0.4.2`). Do not use GitHub's source-code ZIP as a binary package. Select `windows-x64/ra.exe` for an x64 target or `windows-x86/ra.exe` for an x86 target. Check the executable's SHA256 before deployment:
 
-- x64 0.4.1: `978a7e548d9f35a103e317c3d643781e6f13d51e3dc09f00735b0900f3931e6d`
-- x86 0.4.1: `7abdeef50508068c068eb76dafb9f8e86d802ad45d0ae9f19086cd54f8fc3311`
+- x64 0.4.2: `476a4f615b6ff8014461e2cdf9926c77891a20fda2fd2807a862d4e7b8b96c5d`
+- x86 0.4.2: `0c01c09abe61e97007ea8889ce50e4f05785c25b61726a7c3a1d1e49f63b70d3`
 
 Reuse a verified cached binary; do not redownload for every command. The controller scripts below remain the installed Skill's adjacent scripts. No compiler, local controller binary or MCP setup is needed on the controller. A mismatched hash is a deployment failure, not permission to execute the binary.
 

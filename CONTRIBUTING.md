@@ -27,7 +27,7 @@ ctest --test-dir build/x64 -C Release --output-on-failure
 ```
 
 Keep protocol 1 compatible where possible. Document request/response changes in
-`skills/remote-windows/references/protocol.md` and changes in supported behavior
+`skills/ssh-remote-desktop/references/protocol.md` and changes in supported behavior
 in the README. Test observable behavior relevant to a change; a successful build
 alone does not establish support for another Windows release.
 

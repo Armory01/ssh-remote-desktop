@@ -4,7 +4,7 @@
 
 These commands are for agents, developers and troubleshooting. For normal
 installation, use the [copyable agent prompt](../README.md#install-copy-this-to-your-agent).
-Current version: **0.4.1**, protocol **1**.
+Current version: **0.4.2**, protocol **1**.
 
 ## Connect and deploy
 
@@ -15,13 +15,13 @@ authentication; unattended repeated calls need a working unattended mechanism.
 From an extracted release directory:
 
 ```pwsh
-& ./skills/remote-windows/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./windows-x64/ra.exe
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"status"}'
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows"}'
+& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./windows-x64/ra.exe
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"status"}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows"}'
 ```
 
 For a source checkout, the packaged binary is under
-`dist/0.4.1/windows-x64/ra.exe`. Check its release SHA256 before deployment.
+`dist/0.4.2/windows-x64/ra.exe`. Check its release SHA256 before deployment.
 The default remote path remains `RemoteAgent/ra.exe` under the SSH user's home;
 this path, the `ra.exe` command and internal task/pipe prefixes retain the early
 prototype names to preserve existing deployments.
@@ -39,7 +39,7 @@ port because `ssh -p` and `scp -p` mean different things.
 Choose a real HWND returned by `windows`:
 
 ```pwsh
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"observe","params":{"window":123456}}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"observe","params":{"window":123456}}'
 ```
 
 The result includes an absolute local `image_path`. The screenshot already came
@@ -68,7 +68,7 @@ $request = @{
         observe=$true
     }
 } | ConvertTo-Json -Depth 12 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 ```
 
 A batch accepts 1–50 actions and stops at the first failure. Check `completed`,
@@ -83,7 +83,7 @@ program in the interactive desktop. The launched program can outlive the worker:
 
 ```pwsh
 $request=@{op='launch';params=@{exe='C:\Windows\System32\notepad.exe';args=@('C:\Users\user\RemoteAgent\test.txt')}} | ConvertTo-Json -Depth 8 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 scp './test-package.zip' 'win-test:RemoteAgent/test-package.zip'
 scp 'win-test:RemoteAgent/result.log' './result.log'
 ```
@@ -98,7 +98,7 @@ requires it. The SSH caller must already have administrator/high integrity;
 check `status.result.privileges`. Direct text commands accept `--elevated`.
 
 ```pwsh
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows","params":{"elevated":true}}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows","params":{"elevated":true}}'
 ```
 
 The response's `worker` field reports the actual token, PID and session. The next
@@ -121,7 +121,7 @@ process. Do not save the request, print it or pass it to a new process as argv:
 ```pwsh
 # $passwordText contains the password supplied for this authorized operation.
 $request=@{op='login';params=@{password=$passwordText}} | ConvertTo-Json -Depth 8 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 $request=$null; $passwordText=$null
 ```
 
@@ -182,6 +182,6 @@ Protocol 1 returns a JSON line followed by exactly `image_bytes` raw bytes. Use
 Read-only UIA has a time budget; a blocked modifying provider can still cause a
 request timeout with an unknown action outcome.
 
-See the [full protocol](../skills/remote-windows/references/protocol.md),
+See the [full protocol](../skills/ssh-remote-desktop/references/protocol.md),
 [architecture](IMPLEMENTATION_PLAN.md), [test results](TEST_RESULTS.md) and
 [contributor instructions](../CONTRIBUTING.md).

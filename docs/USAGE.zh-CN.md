@@ -4,7 +4,7 @@
 
 C++ 单文件 Windows 桌面 helper，通过现有 SSH 调用。控制端使用 Agent 已有的 Shell、SSH/SCP 和图片读取工具，不需要 MCP、本地 RemoteAgent 客户端或额外 C++ 运行库。
 
-当前版本 **0.4.1**：窗口枚举、PNG/JPEG 截图、鼠标/键盘/中文输入、UIA 读取与操作、GUI 程序启动、动作批处理、按需高权限 worker、实验性的临时 SYSTEM 密码解锁/Windows 11 本地账户登录，以及自动部署和更新。远端先开通管理员 SSH；Agent 可在开机后尚无人登录或注销后，按需登录同一本地账户的控制台。
+当前版本 **0.4.2**：窗口枚举、PNG/JPEG 截图、鼠标/键盘/中文输入、UIA 读取与操作、GUI 程序启动、动作批处理、按需高权限 worker、实验性的临时 SYSTEM 密码解锁/Windows 11 本地账户登录，以及自动部署和更新。远端先开通管理员 SSH；Agent 可在开机后尚无人登录或注销后，按需登录同一本地账户的控制台。
 
 ## 使用
 
@@ -14,11 +14,11 @@ C++ 单文件 Windows 桌面 helper，通过现有 SSH 调用。控制端使用 
 
 ```pwsh
 # 一次部署，之后相同文件直接复用；不同文件先校验再替换。
-& ./skills/remote-windows/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.1/windows-x64/ra.exe
+& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.2/windows-x64/ra.exe
 
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"status"}'
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows"}'
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"observe","params":{"window":123456}}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"status"}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows"}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"observe","params":{"window":123456}}'
 ```
 
 最后一条返回结构化结果及本地图片绝对路径 `image_path`。Agent 再用自己的图片工具打开它。截图已经随同一次 SSH 调用传回，不需要第二次连接取图，也不经过 Base64 文本。
@@ -38,11 +38,11 @@ $request = @{
         observe = $true
     }
 } | ConvertTo-Json -Depth 12 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 
 # GUI 启动使用 helper；普通命令和文件继续使用 SSH/SCP。
 $request = @{op='launch';params=@{exe='C:\Windows\System32\notepad.exe';args=@('C:\Users\user\RemoteAgent\测试.txt')}} | ConvertTo-Json -Depth 8 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 scp './测试包.zip' 'win-test:RemoteAgent/测试包.zip'
 scp 'win-test:RemoteAgent/日志.txt' './日志.txt'
 ```
@@ -54,9 +54,9 @@ scp 'win-test:RemoteAgent/日志.txt' './日志.txt'
 在已授权的管理员窗口操作中，给这一次请求加上 `params.elevated:true`：
 
 ```pwsh
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows","params":{"elevated":true}}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"windows","params":{"elevated":true}}'
 $request = @{op='launch';params=@{elevated=$true;exe='C:\Path\AdminApp.exe';args=@()}} | ConvertTo-Json -Depth 8 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 ```
 
 `windows`、`observe`、`act`、`launch` 都支持该参数；直接 CLI 对应 `--elevated`。SSH 进程本身必须已具备管理员高完整性权限，可通过 `status.result.privileges` 检查。临时任务使用 `TASK_RUNLEVEL_HIGHEST`，返回头的 `worker` 标明实际权限、PID 和会话；窗口和启动结果也报告目标权限。
@@ -72,7 +72,7 @@ $request = @{op='launch';params=@{elevated=$true;exe='C:\Path\AdminApp.exe';args
 ```pwsh
 # $passwordText 是本次授权使用的 Windows 账户密码，不输出或保存请求。
 $request = @{op='login';params=@{user='WIN-TEST\user';password=$passwordText}} | ConvertTo-Json -Depth 8 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 $request = $null; $passwordText = $null
 ```
 
@@ -87,10 +87,10 @@ $request = $null; $passwordText = $null
 0.3.0 增加 `desktop_probe`（只读桌面、显示输出、锁定状态、截图与 UIA）和 `unlock`。要求已有管理员高完整性的 SSH 登录，unlock 的目标是同一账户已经登录的 active 桌面；新登录使用上节的 login。协议仍为 1，EXE 仍只有一个，没有 SCM 服务或常驻 worker。
 
 ```pwsh
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"desktop_probe","params":{"format":"jpeg"}}'
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request '{"op":"desktop_probe","params":{"format":"jpeg"}}'
 # $passwordText 来自本次授权使用的凭据；不要输出请求或保存到文件。
 $request = @{op='unlock';params=@{password=$passwordText}} | ConvertTo-Json -Depth 8 -Compress
-& ./skills/remote-windows/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
+& ./skills/ssh-remote-desktop/scripts/Receive-Ra.ps1 -Computer win-test -Request $request
 $request = $null; $passwordText = $null
 ```
 
@@ -115,10 +115,10 @@ $request = $null; $passwordText = $null
 缓存按版本／架构分目录，下载先写唯一临时文件，SHA256 与微软签名通过后才放入正式缓存。已有缓存重新校验后复用，损坏缓存重新获取。MSI 不塞进 Skill 发布包；离线包可通过 `-PowerShellMsiPath`（独立安装脚本使用 `-MsiPath`）导入，缓存根目录可用 `-PowerShellCacheDirectory` 覆盖。
 
 ```pwsh
-& ./skills/remote-windows/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.1/windows-x64/ra.exe
+& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.2/windows-x64/ra.exe
 # 只部署 helper，或指定已下载的官方 MSI：
-& ./skills/remote-windows/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.1/windows-x64/ra.exe -SkipPowerShell
-& ./skills/remote-windows/scripts/Install-Pwsh.ps1 -Computer win-test -MsiPath '<官方 MSI 路径>'
+& ./skills/ssh-remote-desktop/scripts/Deploy-Ra.ps1 -Computer win-test -Executable ./dist/0.4.2/windows-x64/ra.exe -SkipPowerShell
+& ./skills/ssh-remote-desktop/scripts/Install-Pwsh.ps1 -Computer win-test -MsiPath '<官方 MSI 路径>'
 ```
 
 控制端附件使用已有的 PowerShell 7；远端首次引导只用 cmd、certutil、MSI，不要求预装 pwsh。为避免 SSH/CMD 多层引号错误，上传短期批处理调用 msiexec，结束清理批处理与 MSI，安装日志保留便于诊断。安装不会自动重启机器；3010 会报告 reboot_required。
@@ -134,12 +134,12 @@ ssh -T win-test 'pwsh -NoProfile -NonInteractive -Command "$PSVersionTable.PSVer
 
 ## Skill 与 Agent
 
-共享入口是 [skills/remote-windows/SKILL.md](../skills/remote-windows/SKILL.md)，详细命令见 [协议说明](../skills/remote-windows/references/protocol.md)。
+共享入口是 [skills/ssh-remote-desktop/SKILL.md](../skills/ssh-remote-desktop/SKILL.md)，详细命令见 [协议说明](../skills/ssh-remote-desktop/references/protocol.md)。
 
 | Agent | 加载方式 | 图片入口 |
 |---|---|---|
-| Codex | 将 `remote-windows` 整个目录复制到自己的 skills 目录，或在项目指令中引用该 SKILL.md | 当前可用的 `view_image` 或等效工具 |
-| Claude Code | 同一目录放到 `~/.claude/skills/remote-windows`，或由项目指令引用 | `Read` |
+| Codex | 将 `ssh-remote-desktop` 整个目录复制到自己的 skills 目录，或在项目指令中引用该 SKILL.md | 当前可用的 `view_image` 或等效工具 |
+| Claude Code | 同一目录放到 `~/.claude/skills/ssh-remote-desktop`，或由项目指令引用 | `Read` |
 | DeepSeek Harness | 用所用版本的技能加载入口加载同一 SKILL.md，或作为任务说明读取；脚本和协议不变 | 图像路由支持时使用 `read_image` 或等效原生入口 |
 
 不修改三个 Agent 的默认工具或模型路由。兼容性依靠命令/图片工具契约；当前实际端到端测试由本会话的 Codex 完成，未单独运行 Claude Code 和 DeepSeek Harness。无图像工具或无视觉模型的路由不能仅靠 Skill 获得识图能力。

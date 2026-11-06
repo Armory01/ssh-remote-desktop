@@ -15,6 +15,23 @@ SSH 可用后，Agent 自动下载、校验和部署小巧的原生 helper；
 [开通 OpenSSH](docs/SSH_SETUP.zh-CN.md) · [进阶用法](docs/USAGE.zh-CN.md) ·
 [MIT 许可证](LICENSE)
 
+## 安装后，直接这样用
+
+安装完成后，在请求里提到 **`ssh-remote-desktop`**，再描述你想完成的任务：
+
+```text
+使用 ssh-remote-desktop 操作 win-test。把这个测试包上传并解压，
+启动程序，按我提供的参数完成配置。把结果截图给我，然后下载程序日志。
+```
+
+要操作另一台电脑，下一句直接换名字：
+
+> 切换到 office-pc，在那台电脑上再做一次相同测试。
+
+在控制端 Agent 安装一个 Skill，就可以复用于多台 Windows 电脑。
+连接、helper 部署、文件传输和桌面操作命令都由 Agent 处理，你只需要描述任务，
+不必编写点击或部署脚本。可以使用已有 SSH Host 别名，或在 Agent 询问时提供目标地址与账户。
+
 ## 项目特点
 
 - **沿用熟悉的 SSH。** 文件、命令和桌面操作都走 SSH，使用已有的电脑名称选择目标，
@@ -38,24 +55,22 @@ SSH 可用后，Agent 自动下载、校验和部署小巧的原生 helper；
 把下面这段提示词直接复制给 **Codex、Claude Code，或其他可以加载 Skill、执行 Shell 命令的 Agent**：
 
 ```text
-请安装这个仓库中的 remote-windows Skill：
+请安装这个仓库中的 ssh-remote-desktop Skill：
 https://github.com/xienan2010/ssh-remote-desktop
 
-阅读 skills/remote-windows/SKILL.md，将完整 Skill 目录（包括 scripts 和
+阅读 skills/ssh-remote-desktop/SKILL.md，将完整 Skill 目录（包括 scripts 和
 references）安装到你当前支持的用户级技能目录。按 Skill 中固定的版本下载
 发布包，使用 helper 前核对其 SHA256。使用现有 SSH/SCP，不要配置 MCP。
+如已安装旧名 remote-windows，请将该安装迁移到 ssh-remote-desktop，避免重复安装。
 
 安装完成后，询问我要操作哪台 Windows SSH 电脑，并优先复用已有 SSH 配置。
 我提供目标后，请自动处理 helper 部署和环境检查，告诉我桌面是否可用。
 不需要让我手工执行底层 helper 命令。
 ```
 
-之后直接描述任务，例如：
-
-> 使用 `win-test`：上传这个测试包，启动程序，查看窗口，完成配置并下载生成的日志。
-
-Skill 保留 **`remote-windows`** 名称以兼容现有调用。在控制端 Agent 安装一次，
-就可以复用于多台 Windows 电脑。
+安装后的 Skill 名称为 **`ssh-remote-desktop`**，与项目统一。
+如果之前安装的是 0.4.2 之前的版本，将旧的 `remote-windows` Skill 目录
+替换为完整的 `ssh-remote-desktop` 目录即可，已有远端 helper 和 SSH 配置可以复用。
 
 ## Windows 首次准备：开通 SSH
 
@@ -101,7 +116,7 @@ macOS/Linux 桌面目标、旧 Windows、PIN/Hello/MFA 和强制 Ctrl+Alt+Del �
 
 - [进阶用法与故障处理](docs/USAGE.zh-CN.md)
 - [实现方案与历史设计](docs/IMPLEMENTATION_PLAN.zh-CN.md)
-- [Skill 与通信协议](skills/remote-windows/SKILL.md)
+- [Skill 与通信协议](skills/ssh-remote-desktop/SKILL.md)
 - [构建和贡献](CONTRIBUTING.zh-CN.md)
 - [更新记录](CHANGELOG.zh-CN.md)
 

@@ -2,6 +2,13 @@
 
 [English](CHANGELOG.md) | **简体中文**
 
+## 0.4.2
+
+- Skill 名称与源码目录统一改为 `ssh-remote-desktop`，升级时替换旧的 `remote-windows` Skill 目录。
+- 中英文 README 前部增加任务用法：按电脑名称选择目标，上传测试包、启动并配置程序、
+  查看截图、取回日志；下一句可以直接切换另一台电脑。
+- 同步安装提示词、脚本引用、测试和打包路径。协议 1、`ra.exe`、远端路径及桌面行为保持不变。
+
 ## 0.4.1
 
 - 项目和仓库改名为 SSH Remote Desktop（`ssh-remote-desktop`）。

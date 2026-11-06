@@ -9,7 +9,7 @@ param(
 # Explicitly logs out or reboots the authorized test host. No credential retries.
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$receiver=Join-Path $root 'skills/remote-windows/scripts/Receive-Ra.ps1'
+$receiver=Join-Path $root 'skills/ssh-remote-desktop/scripts/Receive-Ra.ps1'
 $out=Join-Path $root '.test-output'
 [IO.Directory]::CreateDirectory($out)|Out-Null
 $checks=[Collections.Generic.List[string]]::new()

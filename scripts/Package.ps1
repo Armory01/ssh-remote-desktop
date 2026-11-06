@@ -2,7 +2,7 @@
 param()
 $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot -Parent
-$version='0.4.1'
+$version='0.4.2'
 $dest=Join-Path $root "dist/$version"
 [IO.Directory]::CreateDirectory($dest)|Out-Null
 $hashes=[Collections.Generic.List[string]]::new()
@@ -19,7 +19,7 @@ foreach($arch in @(@{build='x64';name='windows-x64'},@{build='Win32';name='windo
 }
 $hashes|Set-Content (Join-Path $dest 'SHA256SUMS.txt')
 [IO.Directory]::CreateDirectory((Join-Path $dest 'skills'))|Out-Null
-Copy-Item -LiteralPath (Join-Path $root 'skills/remote-windows') -Destination (Join-Path $dest 'skills') -Recurse -Force
+Copy-Item -LiteralPath (Join-Path $root 'skills/ssh-remote-desktop') -Destination (Join-Path $dest 'skills') -Recurse -Force
 foreach($name in @('README.md','README.zh-CN.md','LICENSE','CHANGELOG.md','CHANGELOG.zh-CN.md','CONTRIBUTING.md','CONTRIBUTING.zh-CN.md')) {
     Copy-Item -LiteralPath (Join-Path $root $name) -Destination $dest
 }

@@ -2,6 +2,16 @@
 
 **English** | [简体中文](CHANGELOG.zh-CN.md)
 
+## 0.4.2
+
+- Rename the installed Skill and its source directory to `ssh-remote-desktop`,
+  matching the project. Replace the old `remote-windows` Skill folder on upgrade.
+- Put task-based usage examples near the start of both READMEs: choose a computer,
+  upload a package, run and configure an application, inspect it and retrieve logs;
+  switch computers by name in the next request.
+- Update installation prompts, script references, tests and release packaging.
+  Protocol 1, `ra.exe`, remote deployment paths and desktop behavior are unchanged.
+
 ## 0.4.1
 
 - Rename the project and repository to SSH Remote Desktop (`ssh-remote-desktop`).

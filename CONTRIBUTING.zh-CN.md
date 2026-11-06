@@ -25,7 +25,7 @@ ctest --test-dir build/x64 -C Release --output-on-failure
 ```
 
 尽量保持协议 1 的兼容性。请求／响应变化写入
-`skills/remote-windows/references/protocol.md`，支持范围变化写入 README。
+`skills/ssh-remote-desktop/references/protocol.md`，支持范围变化写入 README。
 验证与修改有关的实际行为；编译成功不能单独证明支持其他 Windows 版本。
 
 ## 远程验收

@@ -2,8 +2,8 @@
 
 **English** | [简体中文 / detailed test history](TEST_RESULTS.zh-CN.md) · [README](../README.md)
 
-Current release: **0.4.1**. The desktop implementation was validated through
-0.4.0; 0.4.1 changes branding, version metadata and documentation, without changing
+Current release: **0.4.2**. The desktop implementation was validated through
+0.4.0; 0.4.1–0.4.2 change branding, Skill naming, version metadata and documentation, without changing
 desktop behavior. Its binaries are rebuilt and unit-tested. The Chinese history
 preserves version-by-version test details from 2026-11-03 through 2026-11-06.
 Hostnames, addresses and user names in public examples are documentation values.

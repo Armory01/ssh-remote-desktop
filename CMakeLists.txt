@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0091 NEW)
-project(SSHRemoteDesktop VERSION 0.4.1 LANGUAGES CXX)
+project(SSHRemoteDesktop VERSION 0.4.2 LANGUAGES CXX)
 if(NOT WIN32 OR NOT MSVC)
   message(FATAL_ERROR "SSH Remote Desktop requires Windows and MSVC")
 endif()

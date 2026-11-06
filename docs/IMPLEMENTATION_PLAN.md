@@ -3,7 +3,7 @@
 **English** | [简体中文 / original design](IMPLEMENTATION_PLAN.zh-CN.md) · [README](../README.md)
 
 SSH Remote Desktop combines an agent Skill, ordinary SSH/SCP and one native
-Windows executable. Current release: **0.4.1**, wire protocol **1**. The original
+Windows executable. Current release: **0.4.2**, wire protocol **1**. The original
 2026-11-03 design and later implementation notes are preserved in the Chinese
 document; this page describes the delivered architecture.
 
@@ -69,8 +69,10 @@ Identical binaries are reused. Remote PowerShell 7 can be installed globally
 from a controller-cached, verified Microsoft MSI; the helper itself needs no
 PowerShell runtime.
 
-The `remote-windows` Skill name, `ra.exe`, `RemoteAgent` directory and internal
-task/pipe prefixes remain compatible with earlier deployments. No MCP, WinRM,
+Since 0.4.2 the Skill is named `ssh-remote-desktop`, matching the project. Replace
+an older `remote-windows` Skill folder when upgrading. The `ra.exe` command,
+`RemoteAgent` directory and internal task/pipe prefixes remain compatible with
+earlier deployments. No MCP, WinRM,
 SSH default-shell modification, resident helper service or persistent auto-login
 configuration is introduced.
 
